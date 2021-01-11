@@ -3,7 +3,7 @@ library(ape)
 library(phytools)
 library(scales)
 
-#read in stuff
+#read in tree frame and data tables
 phylotree = read.tree("C:/Users/sarahd_98/OneDrive/Documents/Stuff from viktors laptop/RAxML_bipartitions.variants")
 bryanttable = read.table("C:/Users/sarahd_98/OneDrive/Documents/Stuff from viktors laptop/Bryant 2016 Table S1.csv",
                          header = TRUE,
@@ -16,16 +16,17 @@ irishtable = read.table("C:/Users/sarahd_98/OneDrive/Documents/Stuff from viktor
                       stringsAsFactors = TRUE,
                       check.names = FALSE)
  
-#branchlengths to SNPs
+#make branchlengths equal to SNPs difference
 phylotree$edge.length = phylotree$edge.length * 882
 
-#round SNPs
+#round SNP numbers to whole numbers
 roundedSNPs = round(phylotree$edge.length)
 phylotree$edge.length = roundedSNPs
 
+#fix dodgy tip label
 phylotree$tip.label[1]= "14-6278"
 
-#function to get names
+#Create function to get names from tables that are in the tree
 irishnames = function(table, tree){
   outputvector = tree$tip.label
   for(index in 1:nrow(table)){
@@ -53,17 +54,18 @@ bryantnames = function(table, tree){
 }
 phylotree$tip.label = bryantnames(bryanttable,phylotree)
 
-#manually fix some
+#manually fix some awkward tip names
 phylotree$tip.label[8] = "( 1 ) CIT-MAP - Ireland"
 phylotree$tip.label[9] ="( 1 ) CITP-MAP - Ireland"
 phylotree$tip.label[21] = "MAP-K10"
 phylotree$tip.label[13] = "( 1 ) 17-2827 Tyrone 1"
+#drop unneeded tips
 badtips = c(1,21)
 phylotree = drop.tip(phylotree, badtips)
 
 SNPs = phylotree$edge.length
 
-#make matched colour vector
+#make matched colour vector for INVM groups
 irishinmv = function(tree){
   colouroutput = rep(NA,length(tree$tip.label))
   
@@ -100,13 +102,16 @@ par(mar=c(0,0,0,0))
 par(bg=NA)
 
 
-#start plotting
+#start plotting tree
 plot.phylo(phylotree, edge.width = 20, font = 3, tip.color = vntrcol,
            label.offset = 0.5,align.tip.label = FALSE,type = "phylogram", cex =8)
+#add SNP labels
 edgelabels(SNPs, cex = 5, bg = "azure")
+#add scale bar and label it
 add.scale.bar("bottomleft", cex = 8, lwd = 17)
 text(x=75,y=1, cex = 8, label = "SNPs")
 
+#create legend for colour and SNP labels
 legend(x =300,y=22.5, title = "INMV Groups",legend = c("Group 1", "Group 2", "Group 122"), 
        text.col = c("coral","Cornflowerblue", "deeppink3"), title.col = "black", cex = 10)
 legend(x=222, y=22.5, legend = c("No. of SNPs"), pch = 0, col = "black", cex = 10)
