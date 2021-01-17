@@ -1,7 +1,8 @@
-table = read.table("C:/Users/sarahd_98/OneDrive/Desktop/Thesis/OD readings test.csv",
+#read table into r
+datatable = read.table("C:/Users/sarahd_98/OneDrive/Desktop/Thesis/OD readings test.csv",
                        header = TRUE,
                        sep = ",")
-y = c(1, 2, 3, 4)
+#create variables of data
 glucosecit = datatable$Glucose.CIT
 pyruvatecit = datatable$Pyruvate.CIT
 lactatecit = datatable$Lactate.CIT
@@ -12,8 +13,9 @@ pyruvatek10 = datatable$Pyruvate.K10
 lactatek10 = datatable$Lactate.K10
 propionatek10 = datatable$Propionate.K10
 
-
+#set the margins for four graphs
 par(mfrow=c(2,2))
+#plot empty graphs and add each K10 and CIT data set for each medium to one
 plot(NULL, xlim = c(1, 10), ylim=c(0,0.9), main = "Glucose",
      xlab = "Weeks", ylab = "OD values")
 points(x = c(0,3,5,8), y = glucosecit, col = "deeppink2", pch = 15, type = "b")
